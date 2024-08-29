@@ -146,12 +146,6 @@ use crate::stdlib::{
     error,
 };
 
-#[cfg(feature = "alloc")]
-use alloc::sync::{Arc, Weak};
-
-#[cfg(feature = "alloc")]
-use core::ops::Deref;
-
 /// `Dispatch` trace data to a [`Subscriber`].
 #[derive(Clone)]
 pub struct Dispatch {

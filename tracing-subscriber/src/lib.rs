@@ -240,7 +240,7 @@ feature! {
     #![all(feature = "registry", feature = "std")]
     pub use registry::Registry;
 
-    ///
+    #[allow(missing_docs)]
     pub fn registry() -> Registry {
         Registry::default()
     }

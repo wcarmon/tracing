@@ -651,12 +651,6 @@ pub struct Tee<A, B> {
 #[derive(Debug)]
 pub struct MutexGuardWriter<'a, W>(MutexGuard<'a, W>);
 
-/// Implements [`std::io::Write`] for an [`Arc`]<W> where `&W: Write`.
-///
-/// This is an implementation detail of the [`MakeWriter`] impl for [`Arc`].
-#[derive(Clone, Debug)]
-pub struct ArcWriter<W>(Arc<W>);
-
 /// A bridge between `fmt::Write` and `io::Write`.
 ///
 /// This is used by the timestamp formatting implementation for the `time`
@@ -1129,38 +1123,6 @@ where
             EitherWriter::A(writer) => EitherWriter::A(writer),
             EitherWriter::B(_) => EitherWriter::B(self.or_else.make_writer_for(meta)),
         }
-    }
-}
-
-// === impl ArcWriter ===
-
-impl<W> io::Write for ArcWriter<W>
-where
-    for<'a> &'a W: io::Write,
-{
-    #[inline]
-    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-        (&*self.0).write(buf)
-    }
-
-    #[inline]
-    fn flush(&mut self) -> io::Result<()> {
-        (&*self.0).flush()
-    }
-
-    #[inline]
-    fn write_vectored(&mut self, bufs: &[io::IoSlice<'_>]) -> io::Result<usize> {
-        (&*self.0).write_vectored(bufs)
-    }
-
-    #[inline]
-    fn write_all(&mut self, buf: &[u8]) -> io::Result<()> {
-        (&*self.0).write_all(buf)
-    }
-
-    #[inline]
-    fn write_fmt(&mut self, fmt: std::fmt::Arguments<'_>) -> io::Result<()> {
-        (&*self.0).write_fmt(fmt)
     }
 }
 
